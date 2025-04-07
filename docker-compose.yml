@@ -1,0 +1,44 @@
+services:
+  gateway:
+    build:
+      context: gw-build
+      args:
+        IGNITION_VERSION: 8.1.45
+    hostname: gateway
+    ports:
+      - 9088:8088
+    volumes:
+      - gateway-data:/usr/local/bin/ignition/data
+      - ./gw-init/gateway.gwbk:/restore.gwbk
+      - ./gw-init/gateway-uuid.txt:/usr/local/bin/ignition/data/.uuid
+      - ./gw-init/gateway-metro-keystore:/usr/local/bin/ignition/data/local/metro-keystore
+    networks:
+      - gateway-network
+    environment:
+      - IGNITION_EDITION=standard
+      - GATEWAY_ADMIN_PASSWORD=katlego
+      - ACCEPT_IGNITION_EULA=Y
+    command: >
+      -n gateway
+      -m 2048
+      -r /restore.gwbk
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=yourStrong(!)Password
+      - MSSQL_PID=Developer
+    ports:
+      - 1433:1433
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    restart: always
+    networks:
+      gateway-network:
+        aliases:
+          - main-db
+networks:
+  gateway-network:
+volumes:
+  gateway-data:
+  sqlserver-data:
