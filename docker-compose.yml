@@ -36,7 +36,7 @@ services:
     networks:
       gateway-network:
         aliases:
-          - main-db
+          - main-db  
 networks:
   gateway-network:
 volumes:
