@@ -36,7 +36,16 @@ services:
     networks:
       core-network:
         aliases:
-          - main-db  
+          - main-db
+  core_smtp:
+    image: dockage/mailcatcher:0.8.2
+    ports:
+      - 1081:1080
+      - 1026:1025
+    networks:
+      core-network:
+        aliases:
+          - mail-srvr  
 networks:
   core-network:
 volumes:
